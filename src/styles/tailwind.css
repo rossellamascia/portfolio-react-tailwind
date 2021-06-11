@@ -1,15 +1,25 @@
 @tailwind base;
-
 /* Your own custom base styles */
 
 /* Start purging... */
+
 @tailwind components;
 /* Stop purging. */
 
 /* Your own custom component styles */
 
 /* Start purging... */
+
 @tailwind utilities;
 /* Stop purging. */
 
 /* Your own custom utilities */
+
+@layer components {
+    .btn-social {
+        @apply p-2 inline-block rounded-full border dark: border-gray-600 text-gray-300 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:border-gray-600 dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300;
+    }
+    .ciao {
+        @apply text-red-800;
+    }
+}
