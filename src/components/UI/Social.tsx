@@ -8,9 +8,9 @@ const Social: React.FC<SocialProps> = () => {
             <ul className="flex justify-center gap-4">
                 <li>
                     <a
-                        href="{{.}}"
+                        href="https://www.linkedin.com/in/rossella-mascia-web-developer/"
                         target="_blank"
-                        rel="noopener"
+                        rel="noopener noreferrer"
                         aria-label="LinkedIn"
                         className="p-2 inline-block rounded-full border border-gray-300 text-gray-300 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:border-gray-600 dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
                     >
@@ -37,9 +37,9 @@ const Social: React.FC<SocialProps> = () => {
               
                 <li>
                     <a
-                        href="{{.}}"
+                        href="https://github.com/rossellamascia"
                         target="_blank"
-                        rel="noopener"
+                        rel="noopener noreferrer"
                         aria-label="GitHub"
                         className="p-2 inline-block rounded-full border border-gray-300 text-gray-300 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:border-gray-600 dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
                     >
