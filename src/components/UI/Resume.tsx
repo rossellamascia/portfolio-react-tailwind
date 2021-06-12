@@ -1,8 +1,11 @@
-export interface ResumeProps {
+import { Works } from "../../Models/Works";
 
+export interface ResumeProps {
+    works: Works[];
 }
 
-const Resume: React.FC<ResumeProps> = () => {
+const Resume: React.FC<ResumeProps> = ({ works }) => {
+
     return (
         <section className="my-4 max-w-5xl mx-auto">
             <div className="text-3xl font-bold mb-8">Resume</div>
@@ -11,12 +14,15 @@ const Resume: React.FC<ResumeProps> = () => {
                 {/* <!-- Work Experience --> */}
                 <div>
                     <div className="text-2xl font-semibold mb-4">Working Experience</div>
+                    {works.map(work => (
+                        <div key={work.id}>
+                            <div className="text-xl font-bold my-2">{work.role}</div>
+                            <p className="my-1 font-light">{work.company} </p>
+                            <p className="text-gray-500 my-1"> {work.from} {work.to}</p>
+                            <p className="text-gray-500 my-1"> {work.city}</p>
+                        </div>
+                    ))}
 
-                    <div>
-                        <div className="text-xl font-bold my-2">1</div>
-                        <p className="my-1 font-light">role</p>
-                        <p className="text-gray-500 my-1">2020</p>
-                    </div>
                 </div>
 
                 {/* <!-- Skills --> */}

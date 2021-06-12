@@ -14,12 +14,9 @@
 /* Stop purging. */
 
 /* Your own custom utilities */
-
-@layer components {
-    .btn-social {
-        @apply p-2 inline-block rounded-full border dark: border-gray-600 text-gray-300 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:border-gray-600 dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300;
-    }
-    .ciao {
-        @apply text-red-800;
-    }
+.input{
+    @apply rounded-lg border-transparent appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent;
+}
+.btn{
+    @apply flex-shrink-0 px-4 py-2 w-full text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200;
 }
