@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Router, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 
 import Main from './components/layout/Main';
 import Header from './components/UI/Header';
@@ -7,6 +7,7 @@ import Footer from './components/UI/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
 import AddWork from './pages/AddWork';
+import Login from './pages/Login';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" component={Home} exact/>
           <Route path="/about" component={About} exact/>
           <Route path="/addWork" component={AddWork} exact/>
+          <Route path="/login" component={Login} exact/>
         </Switch>
      
 

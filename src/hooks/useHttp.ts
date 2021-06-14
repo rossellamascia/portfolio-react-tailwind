@@ -1,9 +1,12 @@
 import { useCallback, useState } from "react";
 import { requestConfig } from "../Models/RequestConfig";
 
+
+
 const useHttp = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const sendRequest = useCallback(async (requestConfig: requestConfig, applyData?) => {
     setIsLoading(true);
@@ -14,13 +17,14 @@ const useHttp = () => {
         headers: requestConfig.headers ? requestConfig.headers : {},
         body: requestConfig.body ? requestConfig.body : null,
       });
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      }
+      // if (!response.ok) {
+      //   throw new Error("Something went wrong!");
+      // }
       const data = await response.json();
       applyData(data);
     } catch (error) {
-      setError(error.message);
+      setErrorMessage(error.message)
+      setError(error);
     }
     setIsLoading(false);
   }, []);
@@ -29,6 +33,7 @@ const useHttp = () => {
     isLoading,
     error,
     sendRequest,
+    errorMessage
   };
 };
 export default useHttp;

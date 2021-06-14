@@ -9,6 +9,7 @@ const Gallery: React.FC<GalleryProps> = () => {
                 <img
                     className="rounded object-cover w-full h-full"
                     src="#"
+                    alt="img-work"
                 />
                 <div
                     className="absolute top-0 left-0 rounded w-full h-full bg-black bg-opacity-30 grid place-items-center opacity-0 hover:opacity-100 transition-opacity duration-200"
