@@ -1,29 +1,39 @@
 import React, { useState } from "react";
+import { Auth } from "../Models/Auth";
 
-interface Auth {
-    token: string,
-    isLoggedIn: boolean,
-    login: (token: string) => void,
-    logout: () => void
-}
+
 
 const AuthContext: React.Context<Auth> = React.createContext<Auth>({
     token: '',
     isLoggedIn: false,
-    login: (token: string) => { },
+    login: (token: string, expirationTime: number) => { },
     logout: () => { }
 })
 
+const calculateRemainingTime = (expirationTime: number): number => {
+    const currentTime = new Date().getTime();
+    const adjExpirationTime = new Date(expirationTime).getTime();
+
+    const reaming = adjExpirationTime - currentTime;
+    return reaming;
+}
+
 export const AuthContextProvider: React.FC = ({ children }) => {
-    const [token, setToken] = useState<string>('');
+    const initialToken = localStorage.getItem('token');
+    const [token, setToken] = useState<string>(initialToken ?? '');
 
     const userIsLoggedIn = !!token;
 
-    const loginHandler = (token: string) => {
-        setToken(token)
+    const loginHandler = (token: string, expirationTime: number) => {
+        setToken(token);
+        localStorage.setItem('token', token);
+        const reamingTime = calculateRemainingTime(expirationTime);
+
+        setTimeout(logoutHandler, reamingTime )
     }
     const logoutHandler = () => {
-        setToken('')
+        setToken('');
+        localStorage.removeItem('token');
     }
 
     const contextValue: Auth = {

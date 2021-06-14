@@ -1,5 +1,8 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import useHttp from "../hooks/useHttp";
+import AuthContext from "../store/auth-context";
+import { keyApi } from "../utility";
+import { Link, useHistory } from 'react-router-dom';
 interface Error {
     error: {
         code: number,
@@ -16,6 +19,9 @@ export interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = () => {
+
+    const contextAuth = useContext(AuthContext);
+    const history = useHistory();
 
     const [isLogin, setIsLogin] = useState<boolean>(false);
     const isLoginHandler = (event: React.MouseEvent<HTMLParagraphElement, MouseEvent>, boolean: boolean) => {
@@ -42,17 +48,19 @@ const Login: React.FC<LoginProps> = () => {
         let url;
 
         if (isLogin) {
-            url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBa85xALO3qCFdaayTeGQOXIjsF5hrwlYM'
+            url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${keyApi}`
 
         } else {
-            url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBa85xALO3qCFdaayTeGQOXIjsF5hrwlYM"
+            url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${keyApi}`
         }
         const dataSingUpResponse = (data: any) => {
             if (data.error && data.error.message) {
                 setError(data)
             } else {
                 setError(undefined);
-                console.log(data)
+                const expiationTime = new Date((new Date().getTime() + (+data.expiresIn * 1000)))
+                contextAuth.login(data.idToken, +expiationTime);
+                history.replace("/settings")
             }
         }
         singUpRequest({
@@ -87,7 +95,7 @@ const Login: React.FC<LoginProps> = () => {
                             </div>
                             <div>
                                 <label htmlFor="password" className="sr-only">Password</label>
-                                <input ref={password} id="password" name="password" type="password" autoComplete="current-password" required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password" />
+                                <input min="7" ref={password} id="password" name="password" type="password" autoComplete="current-password" required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password" />
                             </div>
                         </div>
 
@@ -106,9 +114,9 @@ const Login: React.FC<LoginProps> = () => {
                             </div>
 
                             <div className="text-sm">
-                                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                <Link to="/new-password" className="font-medium text-indigo-600 hover:text-indigo-500">
                                     Forgot your password?
-                                </a>
+                                </Link>
                             </div>
                         </div>
 
