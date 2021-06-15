@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { app } from "../base";
+import Datepicker from "../components/UI/Datepicker";
 import useHttp from "../hooks/useHttp";
+import { Works } from "../Models/Works";
+import { urlAPI } from "../utility";
 
 export interface AddWorkProps {
 
@@ -8,10 +13,16 @@ export interface AddWorkProps {
 const AddWork: React.FC<AddWorkProps> = () => {
     const [role, setRole] = useState<string>('');
     const [company, setCompany] = useState<string>('');
-    const [type, setType] = useState<string>('0');
+    const [type, setType] = useState<string>('type');
     const [from, setFrom] = useState<string>('');
     const [to, setTo] = useState<string>('');
     const [city, setCity] = useState<string>('');
+    const [fileUrl, setFileUrl] = useState<string>('');
+    console.log(fileUrl);
+    
+
+    const history = useHistory()
+
 
     const { isLoading,
         error,
@@ -25,42 +36,38 @@ const AddWork: React.FC<AddWorkProps> = () => {
     const companyHandler = (e: React.FormEvent<HTMLInputElement>) => {
         setCompany(e.currentTarget.value)
     }
+    const onChangeFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const file = e.target.files[0]
+            const storageRef = app.storage().ref();
+            const fileRef = storageRef.child(file.name);
+            await fileRef.put(file);
+            setFileUrl(await fileRef.getDownloadURL())     
+        }
+
+    }
     const typeHandler = (e: React.FormEvent<HTMLSelectElement>) => {
         setType(e.currentTarget.value)
     }
-    const fromHandler = (e: React.FormEvent<HTMLInputElement>) => {
-        setFrom(e.currentTarget.value)
-    }
-    const toHandler = (e: React.FormEvent<HTMLInputElement>) => {
-        setTo(e.currentTarget.value)
-    }
+
     const cityHandler = (e: React.FormEvent<HTMLInputElement>) => {
         setCity(e.currentTarget.value)
     }
 
-    const addWorkHandler = (data: {
-        role: string,
-        company: string,
-        type: string,
-        from: string,
-        to: string,
-        city: string
-    }) => {
+    const addWorkHandler = (data: Partial<Works>) => {
         sendRequest({
-            url: "https://portfolio-51f61-default-rtdb.firebaseio.com/work.json",
+            url: `${urlAPI}/works.json`,
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
                 "Content-Type": "application/json"
             }
         })
-
-
+        
     }
 
     const submitFormHandler = (e: React.FormEvent) => {
-        e.preventDefault()
-
+        e.preventDefault();
 
         if (role !== '' && company !== '' && type !== '0' && from !== '' && to !== '' && city !== '') {
             addWorkHandler({
@@ -69,8 +76,10 @@ const AddWork: React.FC<AddWorkProps> = () => {
                 type,
                 from,
                 to,
-                city
+                city,
+                fileUrl
             })
+            history.replace("/");
         } else {
             console.error('errore')
         }
@@ -83,29 +92,60 @@ const AddWork: React.FC<AddWorkProps> = () => {
             <div className="flex justify-center">
                 <form onSubmit={submitFormHandler}>
                     <div>
-                        <label className="block mb-1">Role</label>
+                        <label
+                            htmlFor="role"
+                            className="font-bold mb-1 text-gray-700 block"
+                        >Role</label>
                         <input onChange={roleHandler} type="text" id="&quot;form-subscribe-Subscribe" className="input" placeholder="Role" value={role} />
                     </div>
                     <div className="my-3">
+                        <label
+                            htmlFor="role"
+                            className="font-bold mb-1 text-gray-700 block"
+                        >Company</label>
                         <input type="text" id="&quot;form-subscribe-Subscribe" onChange={companyHandler} className="input" placeholder="Company" value={company} />
                     </div>
+                    <div className="my-3">
+                        <label
+                            htmlFor="file"
+                            className="font-bold mb-1 text-gray-700 block"
+                        >Company</label>
+                        <input type="file" accept="image/*" id="file" onChange={onChangeFileHandler} className="input" />
+                    </div>
+                    <label
+                        htmlFor="role"
+                        className="font-bold mb-1 text-gray-700 block"
+                    >Kind of employment</label>
                     <div className="relative inline-block w-full mb-3">
                         <select className="input" value={type} placeholder="Regular input" onChange={typeHandler}>
-                            <option disabled>Type</option>
-                            <option value={1}>Full time</option>
-                            <option value={2}>Another option</option>
-                            <option value={3}>And one more</option>
+                            <option disabled value="type">Type</option>
+                            <option value="full time">Full time</option>
+                            <option value="part time">Part-time</option>
+                            <option value="self-employment">Self-employment</option>
+                            <option value="freelance">Freelance</option>
+                            <option value="contract">Contract</option>
+                            <option value="stage">Stage</option>
+                            <option value="apprenticeship">Apprenticeship</option>
                         </select>
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
                         </div>
                     </div>
-                    <label htmlFor="from" className="block mb-1">From</label>
                     <div className="flex">
-                        <input type="text" id="from" onChange={fromHandler} className="input" placeholder="m/Y" value={from} />
-                        <input type="text" id="&quot;form-subscribe-Subscribe" onChange={toHandler} className="input ml-3" placeholder="m/Y" value={to} />
+                        <Datepicker
+                            setDate={setFrom}
+                            label="From"
+                        />
+                        <Datepicker
+                            setDate={setTo}
+                            label="To"
+                        />
                     </div>
                     <div className="my-3">
+                        <label
+                            htmlFor="role"
+                            className="font-bold mb-1 text-gray-700 block"
+                        >City</label>
                         <input type="text" id="&quot;form-subscribe-Subscribe" onChange={cityHandler} className="input" placeholder="City" value={city} />
                     </div>
                     <button className="btn" type="submit">

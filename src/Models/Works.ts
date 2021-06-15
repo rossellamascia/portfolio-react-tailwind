@@ -6,4 +6,5 @@ export interface Works {
     to: string;
     type: string;
     role: string;
+    fileUrl: string;
 }

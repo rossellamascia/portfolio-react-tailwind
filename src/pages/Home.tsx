@@ -8,6 +8,7 @@ import Gallery from '../components/UI/Gallery';
 import useHttp from '../hooks/useHttp';
 import { useEffect, useState } from 'react';
 import { Works } from '../Models/Works';
+import { urlAPI } from '../utility';
 
 export interface HomeProps {
 
@@ -15,7 +16,7 @@ export interface HomeProps {
 
 const Home: React.FC<HomeProps> = () => {
     const [works, setWorks] = useState<Works[]>([])
-
+    
     const {
         isLoading,
         error,
@@ -23,29 +24,32 @@ const Home: React.FC<HomeProps> = () => {
     } = useHttp();
 
 
-    useEffect(()=> {
-        const transformWorks = (taskObj: any) => {
+    useEffect(() => {
+        const abort = new AbortController();
+        const transformWorks = (workObj: Works[]) => {
             const loadedWorks = [];
-
-            console.log(taskObj);
-            
-        
-            for (const key in taskObj) {
-              loadedWorks.push({
-                id: key,
-                city: taskObj[key].city,
-                company: taskObj[key].company,
-                from: taskObj[key].from,
-                to: taskObj[key].to,
-                type: taskObj[key].type,
-                role: taskObj[key].role
-              });
+            for (const key in workObj) {
+                loadedWorks.push({
+                    id: key,
+                    city: workObj[key].city,
+                    company: workObj[key].company,
+                    from: workObj[key].from,
+                    to: workObj[key].to,
+                    type: workObj[key].type,
+                    role: workObj[key].role,
+                    fileUrl: workObj[key].fileUrl
+                });
             }
             setWorks(loadedWorks);
-          };
+        };
+
         fetchWork({
-            url: 'https://portfolio-51f61-default-rtdb.firebaseio.com/work.json'
+            url: `${urlAPI}/works.json`
         }, transformWorks)
+
+        return () => {
+            abort.abort();
+        };
     }, [fetchWork])
 
     return (

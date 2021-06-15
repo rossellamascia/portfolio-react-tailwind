@@ -41,10 +41,7 @@ export const AuthContextProvider: React.FC = ({ children }) => {
         isLoggedIn: userIsLoggedIn,
         login: loginHandler,
         logout: logoutHandler
-
     }
-
-
     return (
         <AuthContext.Provider value={contextValue}>
             {children}
