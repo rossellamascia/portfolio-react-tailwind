@@ -1,14 +1,13 @@
 import React, { useContext, useState } from "react";
 import useHttp from "../hooks/useHttp";
-import AuthContext, { AuthContextProvider } from "../store/auth-context";
+import AuthContext from "../store/auth-context";
 import { keyApi } from "../utility";
-import { Auth } from "../Models/Auth";
 
-export interface PasswordRecoveryProps {
+export interface NewPasswordProps {
 
 }
 
-const PasswordRecovery: React.FC<PasswordRecoveryProps> = () => {
+const NewPassword: React.FC<NewPasswordProps> = () => {
     const contextAuth = useContext(AuthContext);
 
     const { isLoading, sendRequest } = useHttp();
@@ -85,4 +84,4 @@ const PasswordRecovery: React.FC<PasswordRecoveryProps> = () => {
     );
 }
 
-export default PasswordRecovery;
+export default NewPassword;

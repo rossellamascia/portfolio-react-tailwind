@@ -40,7 +40,7 @@ const Resume: React.FC<ResumeProps> = ({ works }) => {
                             <div>
                                 <div className="text-xl font-bold">{work.role}</div>
                                 <p className="my-1 font-light">{work.company} </p>
-                                <p className="text-gray-500 my-1"> {work.from} {work.to} | {work.type}</p>
+                                <p className="text-gray-500 my-1"> {work.from} {work.to} • {work.type}</p>
                                 <p className="text-gray-500 mt-1"> {work.city}</p>
                             </div>
                         </div>

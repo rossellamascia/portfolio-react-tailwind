@@ -19,7 +19,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
     const [city, setCity] = useState<string>('');
     const [fileUrl, setFileUrl] = useState<string>('');
     console.log(fileUrl);
-    
+
 
     const history = useHistory()
 
@@ -42,7 +42,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
             const storageRef = app.storage().ref();
             const fileRef = storageRef.child(file.name);
             await fileRef.put(file);
-            setFileUrl(await fileRef.getDownloadURL())     
+            setFileUrl(await fileRef.getDownloadURL())
         }
 
     }
@@ -63,7 +63,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
                 "Content-Type": "application/json"
             }
         })
-        
+
     }
 
     const submitFormHandler = (e: React.FormEvent) => {
@@ -148,9 +148,13 @@ const AddWork: React.FC<AddWorkProps> = () => {
                         >City</label>
                         <input type="text" id="&quot;form-subscribe-Subscribe" onChange={cityHandler} className="input" placeholder="City" value={city} />
                     </div>
+                  
                     <button className="btn" type="submit">
+                        
                         Add
                     </button>
+
+
                 </form>
 
             </div>

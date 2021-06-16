@@ -9,6 +9,7 @@ import useHttp from '../hooks/useHttp';
 import { useEffect, useState } from 'react';
 import { Works } from '../Models/Works';
 import { urlAPI } from '../utility';
+import Spinner from '../components/UI/Spinner';
 
 export interface HomeProps {
 
@@ -16,7 +17,7 @@ export interface HomeProps {
 
 const Home: React.FC<HomeProps> = () => {
     const [works, setWorks] = useState<Works[]>([])
-    
+
     const {
         isLoading,
         error,
