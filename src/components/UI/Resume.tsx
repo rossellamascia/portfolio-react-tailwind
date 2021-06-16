@@ -21,9 +21,9 @@ const Resume: React.FC<ResumeProps> = ({ works }) => {
 
                 <div>
                     <div className="flex flex-wrap items-center">
-                        <div className="text-2xl font-semibold mb-4 mr-12">Working Experience</div>
+                        <div className="text-2xl font-semibold mr-12">Working Experience</div>
                         {ctxAuth.isLoggedIn && (
-                            <div className="text-2xl font-semibold mb-4">
+                            <div className="text-2xl font-semibold">
                                 <Link to="add-work-esperance">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -32,19 +32,22 @@ const Resume: React.FC<ResumeProps> = ({ works }) => {
                             </div>
                         )}
                     </div>
-                    {works.map(work => (
-                        <div className="flex gap-3 content-center" key={work.id}>
-                            <div>
-                                <img src={work.fileUrl} alt="img" width="100px" height="auto" />
+                    {works.map(work => {
+
+                        return (
+                            <div className="flex gap-3 content-center mt-4" key={work.id}>
+                                <div>
+                                    <img src={work.fileUrl} alt="img" width="100px" height="auto" />
+                                </div>
+                                <div>
+                                    <div className="text-xl font-bold">{work.role}</div>
+                                    <p className="font-light">{work.company} • {work.type.charAt(0).toUpperCase() + work.type.slice(1)}</p>
+                                    <p className="text-gray-500"> {work.from.split(" ").slice(1).join(" ")} - {work.to.split(" ").slice(1).join(" ")}</p>
+                                    <p className="text-gray-500"> {work.city}</p>
+                                </div>
                             </div>
-                            <div>
-                                <div className="text-xl font-bold">{work.role}</div>
-                                <p className="my-1 font-light">{work.company} </p>
-                                <p className="text-gray-500 my-1"> {work.from} {work.to} • {work.type}</p>
-                                <p className="text-gray-500 mt-1"> {work.city}</p>
-                            </div>
-                        </div>
-                    ))}
+                        )
+                    })}
 
                 </div>
 

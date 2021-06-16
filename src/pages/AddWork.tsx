@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { app } from "../base";
+import Alert from "../components/UI/Alert";
 import Datepicker from "../components/UI/Datepicker";
 import useHttp from "../hooks/useHttp";
 import { Works } from "../Models/Works";
@@ -17,34 +18,33 @@ const AddWork: React.FC<AddWorkProps> = () => {
     const [from, setFrom] = useState<string>('');
     const [to, setTo] = useState<string>('');
     const [city, setCity] = useState<string>('');
-    const [fileUrl, setFileUrl] = useState<string>('');
-    console.log(fileUrl);
-
+    const [file, setFile] = useState<File>();
+    const [successMessage, setSuccessMessage] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<boolean>(false);
 
     const history = useHistory()
 
 
     const { isLoading,
         error,
-        sendRequest, } = useHttp()
+        sendRequest,
+        setIsLoading
+    } = useHttp()
 
 
 
     const roleHandler = (event: React.FormEvent<HTMLInputElement>) => {
         setRole(event.currentTarget.value);
+        setErrorMessage(false)
     }
     const companyHandler = (e: React.FormEvent<HTMLInputElement>) => {
         setCompany(e.currentTarget.value)
     }
-    const onChangeFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChangeFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0]
-            const storageRef = app.storage().ref();
-            const fileRef = storageRef.child(file.name);
-            await fileRef.put(file);
-            setFileUrl(await fileRef.getDownloadURL())
+            setFile(file);
         }
-
     }
     const typeHandler = (e: React.FormEvent<HTMLSelectElement>) => {
         setType(e.currentTarget.value)
@@ -63,13 +63,28 @@ const AddWork: React.FC<AddWorkProps> = () => {
                 "Content-Type": "application/json"
             }
         })
-
+        setSuccessMessage(true);
+        history.replace("/");
     }
 
-    const submitFormHandler = (e: React.FormEvent) => {
-        e.preventDefault();
+    const fileUrlHandler = async (file: File) => {
+        const storageRef = app.storage().ref();
+        const fileRef = storageRef.child(file.name);
+        await fileRef.put(file);
+        return await fileRef.getDownloadURL()
+    }
 
-        if (role !== '' && company !== '' && type !== '0' && from !== '' && to !== '' && city !== '') {
+    const submitFormHandler = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setErrorMessage(false);
+        setSuccessMessage(false);
+
+        if (role !== '' && company !== '' && type !== '0' && from !== '' && to !== '' && city !== '' && file) {
+
+            const fileUrl = await fileUrlHandler(file);
+            
+            
             addWorkHandler({
                 role,
                 company,
@@ -79,15 +94,15 @@ const AddWork: React.FC<AddWorkProps> = () => {
                 city,
                 fileUrl
             })
-            history.replace("/");
         } else {
-            console.error('errore')
+            setErrorMessage(true);
+            console.error('errore');
         }
     }
     return (
-        <>
+        <section className="min-h-screen">
             <div className="flex justify-center mb-7 mt-10">
-                <h1 className="text-5xl">Add your work</h1>
+                <h1 className="text-5xl font-bold">Add your work</h1>
             </div>
             <div className="flex justify-center">
                 <form onSubmit={submitFormHandler}>
@@ -131,7 +146,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
                             <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
                         </div>
                     </div>
-                    <div className="flex">
+                    <div className="flex gap-5">
                         <Datepicker
                             setDate={setFrom}
                             label="From"
@@ -141,24 +156,50 @@ const AddWork: React.FC<AddWorkProps> = () => {
                             label="To"
                         />
                     </div>
-                    <div className="my-3">
+                    <div className="mb-3">
                         <label
                             htmlFor="role"
                             className="font-bold mb-1 text-gray-700 block"
                         >City</label>
                         <input type="text" id="&quot;form-subscribe-Subscribe" onChange={cityHandler} className="input" placeholder="City" value={city} />
                     </div>
-                  
-                    <button className="btn" type="submit">
-                        
-                        Add
-                    </button>
 
+                    {!isLoading && <button className="btn" type="submit">
+                        Add
+                    </button>}
+                    {isLoading && <p className="text-center">Loading...</p>}
+                    {successMessage && <Alert
+                        className="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md mt-6"
+                        textMain="Success"
+                        icon={
+                            {
+                                className: "h-6 w-6 mr-4",
+                                path: "M5 13l4 4L19 7",
+                                viewBox: "0 0 24 24",
+                                fill: "none",
+                                stroke: "currentColor"
+                            }
+                        }
+
+                    />}
+                    {errorMessage && <Alert
+                        className="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md mt-6"
+                        textMain="Error"
+                        icon={
+                            {
+                                className: "h-6 w-6 mr-4",
+                                path: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z",
+                                viewBox: "0 0 24 24",
+                                fill: "none",
+                                stroke: "currentColor"
+                            }
+                        }
+
+                    />}
 
                 </form>
-
             </div>
-        </>
+        </section>
 
     );
 }

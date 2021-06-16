@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { NavLink, useLocation, useRouteMatch } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 
 export interface HeaderProps {
@@ -12,13 +12,6 @@ const Header: React.VFC<HeaderProps> = () => {
         contextAuth.logout();
     }
 
-    const location = useLocation();
-
-    console.log(location);
-    
-
-    
-    
     return (
         <header className="w-full px-4 pt-8 max-w-5xl h-20 mx-auto">
             <nav className="flex items-center justify-between flex-wrap ">

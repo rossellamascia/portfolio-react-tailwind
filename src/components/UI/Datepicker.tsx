@@ -412,7 +412,7 @@ const Datepicker: React.FC<DatepickerProps> = ({ label, setDate }) => {
                         dispatch({ type: "IS_OPEN", isOpen: false });
                         toggleDisplayDateFocus();
                     }}
-                    className="focus:ring-2focus:ring-purple-600 focus:border-transparent w-full pl-4 pr-10 py-3 leading-none rounded-lg shadow-sm text-gray-600 font-medium outline-none focus:outline-none focus:shadow-outline"
+                    className="input"
                     placeholder="Select date"
                 />
 
