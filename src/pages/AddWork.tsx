@@ -1,7 +1,6 @@
 /* eslint-disable no-dupe-keys */
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { app } from "../base";
 import Alert from "../components/UI/Alert";
 import Datepicker from "../components/UI/Datepicker";
 import useHttp from "../hooks/useHttp";
@@ -19,7 +18,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
     const [companyWebSite, setCompanyWebSite] = useState<string>('');
     const [type, setType] = useState<string>('type');
     console.log(type);
-    
+
     const [from, setFrom] = useState<string>('');
     const [to, setTo] = useState<string>('');
     const [city, setCity] = useState<string>('');
@@ -70,9 +69,9 @@ const AddWork: React.FC<AddWorkProps> = () => {
         setType(e.currentTarget.value)
     }
 
-    const cityHandler = (e: React.FormEvent<HTMLInputElement>) => {
+    const cityHandler = useCallback((e: React.FormEvent<HTMLInputElement>) => {
         setCity(e.currentTarget.value)
-    }
+    }, [])
 
     const addWorkHandler = useCallback((data: Omit<Works, 'id'>) => {
         sendRequest({
@@ -128,7 +127,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
     return (
         <section className="min-h-screen">
             <div className="flex justify-center mb-7 mt-10">
-                <h1 className="text-5xl font-bold">Add your work</h1>
+                <h1 className="text-5xl font-bold">Add your job</h1>
             </div>
             <div className="flex justify-center">
                 <form onSubmit={submitFormHandler}>
@@ -153,7 +152,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
                             htmlFor="role"
                             className="font-bold mb-1 text-gray-700 block"
                         >Company web site</label>
-                        <input type="text" id="&quot;form-subscribe-Subscribe" onChange={companyWebSiteHandler} className={errorMessage.companyWebSite ? 'outline-error' : 'input'} placeholder="Https://" value={company} />
+                        <input type="url" id="&quot;form-subscribe-Subscribe" onChange={companyWebSiteHandler} className={errorMessage.companyWebSite ? 'outline-error' : 'input'} placeholder="Https://" value={companyWebSite} />
                         {errorMessage.companyWebSite && <p className="error-message">Required field</p>}
 
                     </div>

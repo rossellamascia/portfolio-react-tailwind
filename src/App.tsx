@@ -15,6 +15,7 @@ const AddWork = React.lazy(() => import('./pages/AddWork'));
 const Login = React.lazy(() => import('./pages/Login'));
 const Settings = React.lazy(() => import('./pages/Settings'));
 const NewPassword = React.lazy(() => import('./pages/NewPassword'));
+const AddProject = React.lazy(() => import('./pages/AddProject'));
 
 
 
@@ -35,6 +36,7 @@ const routesLogged: RouteProps[] = [
   { path: "/add-work-experience", render: () => <AddWork />, exact: true },
   { path: "/new-password", render: () => <NewPassword />, exact: true },
   { path: "/about", render: () => <About />, exact: true },
+  { path: "/add-project", render: () => <AddProject />, exact: true },
   {
     path: "*", render: () => {
       return <Redirect to="/" />

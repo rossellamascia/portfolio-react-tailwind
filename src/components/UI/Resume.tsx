@@ -1,4 +1,4 @@
-import { Fragment, useContext } from "react";
+import React, { Fragment, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Works } from "../../Models/Works";
 import AuthContext from "../../store/auth-context";
@@ -37,12 +37,12 @@ const Resume: React.FC<ResumeProps> = ({ works }) => {
                         return (
                             <div className="flex gap-3 content-center mt-4" key={work.id}>
                                 <div>
-                                    <img src={work.fileUrl as string} alt="img" width="100px" height="auto" />
+                                    <img src={work.fileUrl} alt="img" width="100px" height="100px"/>
                                 </div>
                                 <div>
                                     <div className="text-xl font-bold">{work.role}</div>
-                                    <p className="font-light"> <a href={work.companyWebSite as string}> {work.company}</a> • {(work.type as string).charAt(0).toUpperCase() + (work.type as string).slice(1)}</p>
-                                    <p className="text-gray-500"> {(work.from as string).split(" ").slice(1).join(" ")} - {(work.to as string ).split(" ").slice(1).join(" ")}</p>
+                                    <p className="font-light"> <a href={work.companyWebSite}> {work.company}</a> • {(work.type).charAt(0).toUpperCase() + (work.type).slice(1)}</p>
+                                    <p className="text-gray-500"> {(work.from).split(" ").slice(1).join(" ")} - {(work.to ).split(" ").slice(1).join(" ")}</p>
                                     <p className="text-gray-500"> {work.city}</p>
                                 </div>
                             </div>
@@ -74,4 +74,4 @@ const Resume: React.FC<ResumeProps> = ({ works }) => {
     );
 }
 
-export default Resume;
+export default React.memo(Resume);
