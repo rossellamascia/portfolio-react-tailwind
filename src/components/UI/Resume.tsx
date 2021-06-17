@@ -24,7 +24,7 @@ const Resume: React.FC<ResumeProps> = ({ works }) => {
                         <div className="text-2xl font-semibold mr-12">Working Experience</div>
                         {ctxAuth.isLoggedIn && (
                             <div className="text-2xl font-semibold">
-                                <Link to="add-work-esperance">
+                                <Link to="add-work-experience">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
@@ -37,12 +37,12 @@ const Resume: React.FC<ResumeProps> = ({ works }) => {
                         return (
                             <div className="flex gap-3 content-center mt-4" key={work.id}>
                                 <div>
-                                    <img src={work.fileUrl} alt="img" width="100px" height="auto" />
+                                    <img src={work.fileUrl as string} alt="img" width="100px" height="auto" />
                                 </div>
                                 <div>
                                     <div className="text-xl font-bold">{work.role}</div>
-                                    <p className="font-light">{work.company} • {work.type.charAt(0).toUpperCase() + work.type.slice(1)}</p>
-                                    <p className="text-gray-500"> {work.from.split(" ").slice(1).join(" ")} - {work.to.split(" ").slice(1).join(" ")}</p>
+                                    <p className="font-light"> <a href={work.companyWebSite as string}> {work.company}</a> • {(work.type as string).charAt(0).toUpperCase() + (work.type as string).slice(1)}</p>
+                                    <p className="text-gray-500"> {(work.from as string).split(" ").slice(1).join(" ")} - {(work.to as string ).split(" ").slice(1).join(" ")}</p>
                                     <p className="text-gray-500"> {work.city}</p>
                                 </div>
                             </div>

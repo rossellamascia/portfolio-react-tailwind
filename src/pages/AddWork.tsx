@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable no-dupe-keys */
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { app } from "../base";
 import Alert from "../components/UI/Alert";
 import Datepicker from "../components/UI/Datepicker";
 import useHttp from "../hooks/useHttp";
 import { Works } from "../Models/Works";
-import { urlAPI } from "../utility";
+import { WorksError } from "../Models/WorksError";
+import { fileUrlHandler, urlAPI } from "../utility";
 
 export interface AddWorkProps {
 
@@ -14,13 +16,28 @@ export interface AddWorkProps {
 const AddWork: React.FC<AddWorkProps> = () => {
     const [role, setRole] = useState<string>('');
     const [company, setCompany] = useState<string>('');
+    const [companyWebSite, setCompanyWebSite] = useState<string>('');
     const [type, setType] = useState<string>('type');
+    console.log(type);
+    
     const [from, setFrom] = useState<string>('');
     const [to, setTo] = useState<string>('');
     const [city, setCity] = useState<string>('');
     const [file, setFile] = useState<File>();
     const [successMessage, setSuccessMessage] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<WorksError>({
+        role: false,
+        company: false,
+        companyWebSite: false,
+        type: false,
+        from: false,
+        to: false,
+        city: false,
+        file: false
+    });
+
+    console.log(errorMessage);
+
 
     const history = useHistory()
 
@@ -35,10 +52,13 @@ const AddWork: React.FC<AddWorkProps> = () => {
 
     const roleHandler = (event: React.FormEvent<HTMLInputElement>) => {
         setRole(event.currentTarget.value);
-        setErrorMessage(false)
+
     }
     const companyHandler = (e: React.FormEvent<HTMLInputElement>) => {
         setCompany(e.currentTarget.value)
+    }
+    const companyWebSiteHandler = (e: React.FormEvent<HTMLInputElement>) => {
+        setCompanyWebSite(e.currentTarget.value)
     }
     const onChangeFileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -54,7 +74,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
         setCity(e.currentTarget.value)
     }
 
-    const addWorkHandler = (data: Partial<Works>) => {
+    const addWorkHandler = useCallback((data: Omit<Works, 'id'>) => {
         sendRequest({
             url: `${urlAPI}/works.json`,
             method: 'POST',
@@ -65,26 +85,18 @@ const AddWork: React.FC<AddWorkProps> = () => {
         })
         setSuccessMessage(true);
         history.replace("/");
-    }
+    }, [history, sendRequest])
 
-    const fileUrlHandler = async (file: File) => {
-        const storageRef = app.storage().ref();
-        const fileRef = storageRef.child(file.name);
-        await fileRef.put(file);
-        return await fileRef.getDownloadURL()
-    }
 
-    const submitFormHandler = async (e: React.FormEvent) => {
+
+    const submitFormHandler = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        setErrorMessage(false);
+
         setSuccessMessage(false);
 
-        if (role !== '' && company !== '' && type !== '0' && from !== '' && to !== '' && city !== '' && file) {
-
+        if (role !== '' && company !== '' && type !== '0' && from !== '' && to !== '' && city !== '' && file && companyWebSite) {
             const fileUrl = await fileUrlHandler(file);
-            
-            
             addWorkHandler({
                 role,
                 company,
@@ -92,13 +104,27 @@ const AddWork: React.FC<AddWorkProps> = () => {
                 from,
                 to,
                 city,
-                fileUrl
+                fileUrl,
+                companyWebSite
             })
         } else {
-            setErrorMessage(true);
+            setIsLoading(false);
+            setErrorMessage({
+                role: role === '',
+                city: city === '',
+                company: company === '',
+                companyWebSite: companyWebSite === '',
+                from: from === '',
+                to: to === '',
+                file: !file,
+                type: type === 'type'
+            })
+
             console.error('errore');
         }
-    }
+    }, [setIsLoading, role, city, company, companyWebSite, from, to, file, type, addWorkHandler]);
+
+
     return (
         <section className="min-h-screen">
             <div className="flex justify-center mb-7 mt-10">
@@ -111,28 +137,40 @@ const AddWork: React.FC<AddWorkProps> = () => {
                             htmlFor="role"
                             className="font-bold mb-1 text-gray-700 block"
                         >Role</label>
-                        <input onChange={roleHandler} type="text" id="&quot;form-subscribe-Subscribe" className="input" placeholder="Role" value={role} />
+                        <input onChange={roleHandler} type="text" id="&quot;form-subscribe-Subscribe" className={errorMessage.role ? 'outline-error' : 'input'} placeholder="Role" value={role} />
+                        {errorMessage.role && <p className="error-message">Required field</p>}
                     </div>
                     <div className="my-3">
                         <label
                             htmlFor="role"
                             className="font-bold mb-1 text-gray-700 block"
                         >Company</label>
-                        <input type="text" id="&quot;form-subscribe-Subscribe" onChange={companyHandler} className="input" placeholder="Company" value={company} />
+                        <input type="text" id="&quot;form-subscribe-Subscribe" onChange={companyHandler} className={errorMessage.company ? 'outline-error' : 'input'} placeholder="Company" value={company} />
+                        {errorMessage.company && <p className="error-message">Required field</p>}
+                    </div>
+                    <div className="my-3">
+                        <label
+                            htmlFor="role"
+                            className="font-bold mb-1 text-gray-700 block"
+                        >Company web site</label>
+                        <input type="text" id="&quot;form-subscribe-Subscribe" onChange={companyWebSiteHandler} className={errorMessage.companyWebSite ? 'outline-error' : 'input'} placeholder="Https://" value={company} />
+                        {errorMessage.companyWebSite && <p className="error-message">Required field</p>}
+
                     </div>
                     <div className="my-3">
                         <label
                             htmlFor="file"
                             className="font-bold mb-1 text-gray-700 block"
-                        >Company</label>
-                        <input type="file" accept="image/*" id="file" onChange={onChangeFileHandler} className="input" />
+                        >Company logo</label>
+                        <input type="file" accept="image/*" id="file" onChange={onChangeFileHandler} className={errorMessage.file ? 'outline-error' : 'input'} />
+                        {errorMessage.file && <p className="error-message">Required field</p>}
                     </div>
                     <label
                         htmlFor="role"
                         className="font-bold mb-1 text-gray-700 block"
                     >Kind of employment</label>
                     <div className="relative inline-block w-full mb-3">
-                        <select className="input" value={type} placeholder="Regular input" onChange={typeHandler}>
+                        <select className={errorMessage.type ? 'outline-error' : 'input'} value={type} placeholder="Regular input" onChange={typeHandler}>
                             <option disabled value="type">Type</option>
                             <option value="full time">Full time</option>
                             <option value="part time">Part-time</option>
@@ -145,6 +183,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
                         <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                             <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
                         </div>
+                        {errorMessage.type && <p className="error-message">Required field</p>}
                     </div>
                     <div className="flex gap-5">
                         <Datepicker
@@ -161,7 +200,8 @@ const AddWork: React.FC<AddWorkProps> = () => {
                             htmlFor="role"
                             className="font-bold mb-1 text-gray-700 block"
                         >City</label>
-                        <input type="text" id="&quot;form-subscribe-Subscribe" onChange={cityHandler} className="input" placeholder="City" value={city} />
+                        <input type="text" id="&quot;form-subscribe-Subscribe" onChange={cityHandler} className={errorMessage.city ? 'outline-error' : 'input'} placeholder="City" value={city} />
+                        {errorMessage.city && <p className="error-message">Required field</p>}
                     </div>
 
                     {!isLoading && <button className="btn" type="submit">
@@ -182,7 +222,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
                         }
 
                     />}
-                    {errorMessage && <Alert
+                    {/* {errorMessage && <Alert
                         className="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md mt-6"
                         textMain="Error"
                         icon={
@@ -195,7 +235,7 @@ const AddWork: React.FC<AddWorkProps> = () => {
                             }
                         }
 
-                    />}
+                    />} */}
 
                 </form>
             </div>

@@ -17,6 +17,9 @@
 .input{
     @apply rounded-lg border-transparent appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent;
 }
+.outline-error{
+    @apply rounded-lg border-transparent appearance-none border border-red-700 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent;
+}
 .btn{
     @apply flex-shrink-0 px-4 py-2 w-full text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200;
 }
@@ -24,4 +27,8 @@
     stroke: hsl(210, 70, 75);
     stroke-linecap: round;
     animation: dash 1.5s ease-in-out infinite;
+}
+
+.error-message{
+    @apply text-red-700 ml-5;
 }

@@ -38,7 +38,8 @@ const Home: React.FC<HomeProps> = () => {
                     to: workObj[key].to,
                     type: workObj[key].type,
                     role: workObj[key].role,
-                    fileUrl: workObj[key].fileUrl
+                    fileUrl: workObj[key].fileUrl,
+                    companyWebSite: workObj[key].companyWebSite
                 });
             }
             setWorks(loadedWorks);
